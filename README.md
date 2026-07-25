@@ -148,3 +148,5 @@ Pour éviter toute confusion dans la documentation du PFE, voici les écarts con
 - **Champ `Agenda.title`** en anglais ici, contre `Agenda.titre` en français côté REST/frontend — incohérence de nommage à corriger si les deux API doivent un jour cohabiter ou fusionner.
 - **`Roles` inclut `ADMIN`** explicitement dans l'enum ici, alors que l'enum équivalent côté REST/frontend ne liste que `CELLULE_VALIDATION`, `EQUIPE_MEDIA`, `JOURNALISTE` (le rôle admin y étant apparemment géré autrement).
 - **Pas de sauvegarde automatique planifiée** : `ScheduleModule` est importé mais aucune tâche `@Cron` n'est définie dans ce projet, contrairement au `BackupService` de l'API REST.
+
+- test n8n
