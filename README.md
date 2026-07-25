@@ -1,5 +1,5 @@
 # Newsroom  — API GraphQL (variante backend)
-
+<!-- test webhook n8n -->
 Ce backend est une **implémentation alternative en GraphQL** du même domaine métier que l'API REST Newsroom (mêmes entités : utilisateurs, articles, médias, agenda, veille info, etc.), construite avec **NestJS + GraphQL (Apollo Server)** au lieu de contrôleurs REST.
 
 > ℹ️ **Positionnement par rapport à l'API REST documentée précédemment :** ce projet couvre le même modèle de données mais dans une version plus proche d'un scaffold généré (`nest generate resource`) : CRUD complet sur chaque entité, sans couche d'authentification, de hachage de mot de passe, ni logique d'appel réel à un modèle d'IA. Il semble s'agir d'une base de départ ou d'une variante d'architecture explorée en parallèle de l'API REST, plutôt que du backend actuellement branché à l'application mobile (qui consomme les URLs REST `newsroom-ai-api-u0vt.onrender.com/...`). À confirmer selon l'usage réel que tu veux en documenter dans le rapport.
