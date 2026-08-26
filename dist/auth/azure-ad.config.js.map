@@ -1,0 +1,1 @@
+{"version":3,"file":"azure-ad.config.js","sourceRoot":"","sources":["../../src/auth/azure-ad.config.ts"],"names":[],"mappings":";;;AAGa,QAAA,WAAW,GAAG;IACzB,MAAM,EAAE,CAAC,QAAgB,EAAE,EAAE,CAC3B,qCAAqC,QAAQ,OAAO;IACtD,OAAO,EAAE,CAAC,QAAgB,EAAE,EAAE,CAC5B,qCAAqC,QAAQ,sBAAsB;CACtE,CAAC"}
