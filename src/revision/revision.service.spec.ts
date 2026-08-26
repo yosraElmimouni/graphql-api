@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsService } from './notifications.service';
+import { RevisionService } from './revision.service';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import {  CreateNotificationInput } from 'src/notifications/dto/create-notification.input';   
-import { UpdateNotificationInput } from './dto/update-notification.input';
-import { Notification } from './entities/notification.entity';
+import { CreateRevisionInput } from './dto/create-revision.input';
+import { UpdateRevisionInput } from './dto/update-revision.input';
 import { ObjectLiteral, Repository } from 'typeorm';
+import { Revision } from './entities/revision.entity';
 
 type MockRepository<T extends ObjectLiteral = any> = Partial<
   Record<keyof Repository<T>, jest.Mock>
@@ -20,32 +20,31 @@ const createMockRepository = <T extends ObjectLiteral = any>(): MockRepository<T
   remove: jest.fn(),
 });
 
-describe('NotificationsService', () => {
-  let service: NotificationsService;
-  let repository: MockRepository<Notification>;
+describe('RevisionService', () => {
+  let service: RevisionService;
+  let repository: MockRepository<Revision>;
 
-  const mockNotification: Notification = {
+  const mockRevision: Revision = {
     id: 1,
-    message: 'Notification test',
-    type: 'info',
-    lu: false,
-    dateEnvoi: new Date('2026-01-01'),
+    dateRevision: new Date('2026-01-01'),
+    commentaire: 'Commentaire test',
     user: { id: 10 } as any,
+    article: { id: 20 } as any,
   } as any;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        NotificationsService,
+        RevisionService,
         {
-          provide: getRepositoryToken(Notification),
-          useValue: createMockRepository<Notification>(),
+          provide: getRepositoryToken(Revision),
+          useValue: createMockRepository<Revision>(),
         },
       ],
     }).compile();
 
-    service = module.get<NotificationsService>(NotificationsService);
-    repository = module.get(getRepositoryToken(Notification));
+    service = module.get<RevisionService>(RevisionService);
+    repository = module.get(getRepositoryToken(Revision));
   });
 
   afterEach(() => {
@@ -58,48 +57,48 @@ describe('NotificationsService', () => {
 
   describe('create', () => {
     it('devrait créer un article et retourner celui-ci avec ses relations', async () => {
-      const dto: CreateNotificationInput = {
-        message : 'Notification test',
-        type : 'info',
-        lu : false,
-        userId : 10
-      } as CreateNotificationInput;
+      const dto: CreateRevisionInput = {
+        dateRevision: new Date('2026-01-01'),
+        commentaire: 'Commentaire test',
+        userId: 10,
+        articleId: 20
+      } as CreateRevisionInput;
 
-      repository.create!.mockReturnValue({ ...dto, user: { id: 10 } });
+      repository.create!.mockReturnValue({ ...dto, user: { id: 10 }, article: { id: 20 } });
       repository.save!.mockResolvedValue({ id: 1 });
-      repository.findOne!.mockResolvedValue(mockNotification);
+      repository.findOne!.mockResolvedValue(mockRevision);
 
       const result = await service.create(dto);
 
       expect(repository.create).toHaveBeenCalledWith({
-        message: dto.message,
-        type: dto.type,
-        lu: dto.lu,
+        dateRevision: dto.dateRevision,
+        commentaire: dto.commentaire,
         user: { id: dto.userId },
+        article: { id: dto.articleId },
       });
       expect(repository.save).toHaveBeenCalled();
       // create() se termine par un findOne() pour recharger les relations
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { id: 1 },
-        relations: {user: true },
+        relations: {user: true, article: true },
       });
-      expect(result).toEqual(mockNotification);
+      expect(result).toEqual(mockRevision);
     });
   });
 
   describe('findAll', () => {
-    it('devrait retourner la liste de tous les Notifications avec leurs relations', async () => {
-      repository.find!.mockResolvedValue([mockNotification]);
+    it('devrait retourner la liste de tous les Revisions avec leurs relations', async () => {
+      repository.find!.mockResolvedValue([mockRevision]);
 
       const result = await service.findAll();
 
       expect(repository.find).toHaveBeenCalledWith({
-        relations: {user: true },
+        relations: {user: true, article: true },
       });
-      expect(result).toEqual([mockNotification]);
+      expect(result).toEqual([mockRevision]);
     });
 
-    it('devrait retourner un tableau vide si aucun Notification n\'existe', async () => {
+    it('devrait retourner un tableau vide si aucun Revision n\'existe', async () => {
       repository.find!.mockResolvedValue([]);
 
       const result = await service.findAll();
@@ -109,80 +108,81 @@ describe('NotificationsService', () => {
   });
 
   describe('findOne', () => {
-    it('devrait retourner un Notification existant', async () => {
-      repository.findOne!.mockResolvedValue(mockNotification);
+    it('devrait retourner un Revision existant', async () => {
+      repository.findOne!.mockResolvedValue(mockRevision);
 
       const result = await service.findOne(1);
 
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { id: 1 },
-        relations: {user: true },
+        relations: {user: true, article: true },
       });
-      expect(result).toEqual(mockNotification);
+      expect(result).toEqual(mockRevision);
     });
 
-    it('devrait lever une NotFoundException si le Notification n\'existe pas', async () => {
+    it('devrait lever une NotFoundException si le Revision n\'existe pas', async () => {
       repository.findOne!.mockResolvedValue(null);
 
       await expect(service.findOne(999)).rejects.toThrow(NotFoundException);
       await expect(service.findOne(999)).rejects.toThrow(
-        'Notification #999 introuvable',
+        'Revision #999 introuvable',
       );
     });
   });
 
   describe('update', () => {
-    it('devrait mettre à jour un Notification et retourner la version rechargée', async () => {
-      const dto: UpdateNotificationInput = { id: 1, message: 'Message mis à jour' } as UpdateNotificationInput;
+    it('devrait mettre à jour un Revision et retourner la version rechargée', async () => {
+      const dto: UpdateRevisionInput = { id: 1, commentaire: 'Commentaire mis à jour' } as UpdateRevisionInput;
 
       repository.update!.mockResolvedValue({ affected: 1 });
-      repository.findOne!.mockResolvedValue({ ...mockNotification, message: 'Message mis à jour' });
+      repository.findOne!.mockResolvedValue({ ...mockRevision, commentaire: 'Commentaire mis à jour' });
 
       const result = await service.update(1, dto);
 
       // Le service ne retire que auteurId du DTO ; `id` reste donc dans `rest`
       // et fait partie de l'objet passé à repository.update().
-      expect(repository.update).toHaveBeenCalledWith(1, { id: 1,message: 'Message mis à jour' });
-      expect(result.message).toBe('Message mis à jour');
+      expect(repository.update).toHaveBeenCalledWith(1, { id: 1, commentaire: 'Commentaire mis à jour' });
+      expect(result.commentaire).toBe('Commentaire mis à jour');
     });
 
     it('devrait mettre à jour la relation user si user id est fourni', async () => {
-      const dto: any = { id: 1, user:2 };
+      const dto: any = { id: 1, user:2, article:3 };
 
       repository.update!.mockResolvedValue({ affected: 1 });
-      repository.findOne!.mockResolvedValue(mockNotification);
+      repository.findOne!.mockResolvedValue(mockRevision);
 
       await service.update(1, dto);
 
       expect(repository.update).toHaveBeenCalledWith(1, {
         id: 1,
         user: 2 ,
+        article: 3 ,
       });
     });
 
-    it('devrait lever une NotFoundException si le Notification à mettre à jour n\'existe pas', async () => {
+    it('devrait lever une NotFoundException si le Revision à mettre à jour n\'existe pas', async () => {
       repository.update!.mockResolvedValue({ affected: 0 });
       repository.findOne!.mockResolvedValue(null);
 
       await expect(
-        service.update(999, { id: 999 } as UpdateNotificationInput),
+        service.update(999, { id: 999 } as UpdateRevisionInput),
       ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('remove', () => {
-    it('devrait supprimer un Notification existant et le retourner', async () => {
-      repository.findOne!.mockResolvedValue(mockNotification);
-      repository.remove!.mockResolvedValue(mockNotification);
+    it('devrait supprimer un Revision existant et le retourner', async () => {
+      repository.findOne!.mockResolvedValue(mockRevision);
+      repository.remove!.mockResolvedValue(mockRevision);
 
       const result = await service.remove(1);
 
       expect(repository.findOne).toHaveBeenCalled();
-      expect(repository.remove).toHaveBeenCalledWith(mockNotification);
-      expect(result).toEqual(mockNotification);
+      expect(repository.remove).toHaveBeenCalledWith(mockRevision);
+      expect(result).toEqual(mockRevision);
     });
 
-    it('devrait lever une NotFoundException si le Notification à supprimer n\'existe pas', async () => {
+    it('devrait lever une NotFoundException si le Revision à supprimer n\'existe pas', async () => {
       repository.findOne!.mockResolvedValue(null);
 
       await expect(service.remove(999)).rejects.toThrow(NotFoundException);
