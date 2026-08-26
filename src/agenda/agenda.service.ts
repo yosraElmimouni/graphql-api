@@ -48,8 +48,9 @@ export class AgendaService {
 
   async remove(id: number) {
     const agenda = await this.findOne(id);
+    const removed = { ...agenda }; 
     await this.agendaRepository.remove(agenda);
-    return agenda;
+    return removed;
   }
 
   

@@ -1,0 +1,438 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ChatbotAi {
+  id: Int!
+  question: String!
+  resultat: String!
+  dateAnalyse: DateTime!
+  user: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Revision {
+  id: Int!
+  dateRevision: DateTime!
+  commentaire: String!
+  user: User!
+  article: Article!
+}
+
+type Role {
+  id: Int!
+  nomRole: Roles!
+  users: [User!]!
+}
+
+enum Roles {
+  CELLULE_VALIDATION
+  EQUIPE_MEDIA
+  JOURNALISTE
+  ADMIN
+}
+
+type Notification {
+  id: Int!
+  message: String!
+  type: String!
+  lu: Boolean!
+  dateEnvoi: DateTime!
+  user: User!
+}
+
+type User {
+  id: Int!
+  nom: String!
+  prenom: String!
+  email: String!
+  statut: String!
+  dateCreation: DateTime!
+  role: Role!
+  notifications: [Notification!]!
+  revisions: [Revision!]!
+  articles: [Article!]!
+  medias: [Media!]!
+  analyses: [ChatbotAi!]!
+}
+
+type Media {
+  id: Int!
+  type: MediaType!
+  urlFichier: String!
+  titre: String!
+  description: String
+  localisation: String
+  dateCapture: DateTime
+  article: Article!
+  user: User!
+}
+
+enum MediaType {
+  Image
+  Video
+  Audio
+}
+
+type Article {
+  id: Int!
+  titre: String!
+  contenu: String!
+  statut: ArticleStatus!
+  categorie: CategorieArticle
+  dateCreation: DateTime!
+  dateModification: DateTime!
+  datePublication: DateTime
+  tags: [String!]
+  auteur: User!
+  medias: [Media!]!
+  revisions: [Revision!]!
+  newsItems: [NewsItem!]!
+}
+
+enum ArticleStatus {
+  Brouillon
+  Publie
+  Archive
+  EnAttente
+  Refuse
+  Supprime
+  EnCoursDeValidation
+  Valide
+  Invalide
+}
+
+enum CategorieArticle {
+  POLITIQUE
+  ECONOMIE
+  TECHNOLOGIE
+  SPORT
+  CULTURE
+  SANTE
+  EDUCATION
+  ENVIRONNEMENT
+  INTERNATIONAL
+  SOCIETE
+  SCIENCE
+  SECURITE
+  DIVERTISSEMENT
+  AUTRE
+}
+
+type NewsItem {
+  id: Int!
+  titre: String!
+  contenu: String!
+  categorie: CategorieNews!
+  url: String!
+  datePublication: DateTime!
+  source: Source!
+  articles: [Article!]!
+}
+
+enum CategorieNews {
+  BREAKING_NEWS
+  POLITIQUE
+  ECONOMIE
+  TECHNOLOGIE
+  SPORT
+  CULTURE
+  INTERNATIONAL
+  BUSINESS
+  IA
+  CYBERSECURITE
+  SANTE
+  SCIENCE
+  ENVIRONNEMENT
+  RESEAUX_SOCIAUX
+  AUTRE
+}
+
+type Source {
+  id: Int!
+  nom: String!
+  url: String!
+  type: TypeSource!
+  fiable: Boolean!
+  logoUrl: String
+  pays: String!
+  langue: String!
+  dateCreation: DateTime!
+  newsItems: [NewsItem!]!
+}
+
+enum TypeSource {
+  WEB
+  API
+  JOURNAL
+  MAGAZINE
+  TV
+  RADIO
+  RESEAU_SOCIAL
+  AGENCE_PRESSE
+  BLOG
+  PODCAST
+  COMMUNIQUE_OFFICIEL
+  REPORTAGE_TERRAIN
+  AUTRE
+}
+
+type Agenda {
+  id: Int!
+  title: String!
+  resume: String!
+  categorie: String!
+  importance: String!
+  dateDebut: DateTime!
+  dateFin: DateTime!
+  lieu: String!
+  source: Source!
+}
+
+type AuthPayload {
+  accessToken: String!
+  user: User!
+}
+
+type Query {
+  users: [User!]!
+  user(id: Int!): User!
+  roles: [Role!]!
+  role(id: Int!): Role!
+  agendas: [Agenda!]!
+  agenda(id: Int!): Agenda!
+  articles: [Article!]!
+  article(id: Int!): Article!
+  chatbotAis: [ChatbotAi!]!
+  chatbotAi(id: Int!): ChatbotAi!
+  medias: [Media!]!
+  media(id: Int!): Media!
+  newsItems: [NewsItem!]!
+  newsItem(id: Int!): NewsItem!
+  notifications: [Notification!]!
+  notification(id: Int!): Notification!
+  revisions: [Revision!]!
+  revision(id: Int!): Revision!
+  sources: [Source!]!
+  source(id: Int!): Source!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  login(loginInput: LoginInput!): AuthPayload!
+  microsoftLogin(idToken: String!): AuthPayload!
+  createRole(createRoleInput: CreateRoleInput!): Role!
+  updateRole(updateRoleInput: UpdateRoleInput!): Role!
+  removeRole(id: Int!): Role!
+  createAgenda(createAgendaInput: CreateAgendaInput!): Agenda!
+  updateAgenda(updateAgendaInput: UpdateAgendaInput!): Agenda!
+  removeAgenda(id: Int!): Agenda!
+  createArticle(createArticleInput: CreateArticleInput!): Article!
+  updateArticle(updateArticleInput: UpdateArticleInput!): Article!
+  removeArticle(id: Int!): Article!
+  createChatbotAi(createChatbotAiInput: CreateChatbotAiInput!): ChatbotAi!
+  updateChatbotAi(updateChatbotAiInput: UpdateChatbotAiInput!): ChatbotAi!
+  removeChatbotAi(id: Int!): ChatbotAi!
+  createMedia(createMediaInput: CreateMediaInput!): Media!
+  updateMedia(updateMediaInput: UpdateMediaInput!): Media!
+  removeMedia(id: Int!): Media!
+  createNewsItem(createNewsItemInput: CreateNewsItemInput!): NewsItem!
+  updateNewsItem(updateNewsItemInput: UpdateNewsItemInput!): NewsItem!
+  removeNewsItem(id: Int!): NewsItem!
+  createNotification(createNotificationInput: CreateNotificationInput!): Notification!
+  updateNotification(updateNotificationInput: UpdateNotificationInput!): Notification!
+  removeNotification(id: Int!): Notification!
+  createRevision(createRevisionInput: CreateRevisionInput!): Revision!
+  updateRevision(updateRevisionInput: UpdateRevisionInput!): Revision!
+  removeRevision(id: Int!): Revision!
+  createSource(createSourceInput: CreateSourceInput!): Source!
+  updateSource(updateSourceInput: UpdateSourceInput!): Source!
+  removeSource(id: Int!): Source!
+}
+
+input CreateUserInput {
+  nom: String!
+  prenom: String!
+  email: String!
+  motDePasse: String!
+  statut: String
+  roleId: Int!
+}
+
+input UpdateUserInput {
+  nom: String
+  prenom: String
+  email: String
+  motDePasse: String
+  statut: String
+  roleId: Int
+  id: Int!
+}
+
+input LoginInput {
+  email: String!
+  motDePasse: String!
+}
+
+input CreateRoleInput {
+  nomRole: Roles!
+}
+
+input UpdateRoleInput {
+  nomRole: Roles
+  id: Int!
+}
+
+input CreateAgendaInput {
+  title: String!
+  resume: String!
+  categorie: String!
+  importance: String!
+  dateDebut: DateTime!
+  dateFin: DateTime!
+  lieu: String!
+  sourceId: Int!
+}
+
+input UpdateAgendaInput {
+  title: String
+  resume: String
+  categorie: String
+  importance: String
+  dateDebut: DateTime
+  dateFin: DateTime
+  lieu: String
+  sourceId: Int
+  id: Int!
+}
+
+input CreateArticleInput {
+  titre: String!
+  contenu: String!
+  statut: ArticleStatus
+  categorie: CategorieArticle
+  tags: [String!]
+  auteurId: Int!
+}
+
+input UpdateArticleInput {
+  titre: String
+  contenu: String
+  statut: ArticleStatus
+  categorie: CategorieArticle
+  tags: [String!]
+  id: Int!
+  datePublication: DateTime
+}
+
+input CreateChatbotAiInput {
+  question: String!
+  resultat: String!
+  userId: Int!
+}
+
+input UpdateChatbotAiInput {
+  question: String
+  resultat: String
+  userId: Int
+  id: Int!
+}
+
+input CreateMediaInput {
+  type: MediaType!
+  urlFichier: String!
+  titre: String!
+  description: String
+  localisation: String
+  dateCapture: DateTime
+  articleId: Int!
+  userId: Int!
+}
+
+input UpdateMediaInput {
+  type: MediaType
+  urlFichier: String
+  titre: String
+  description: String
+  localisation: String
+  dateCapture: DateTime
+  articleId: Int
+  userId: Int
+  id: Int!
+}
+
+input CreateNewsItemInput {
+  titre: String!
+  contenu: String!
+  categorie: CategorieNews!
+  url: String!
+  datePublication: DateTime!
+  sourceId: Int!
+}
+
+input UpdateNewsItemInput {
+  titre: String
+  contenu: String
+  categorie: CategorieNews
+  url: String
+  datePublication: DateTime
+  sourceId: Int
+  id: Int!
+}
+
+input CreateNotificationInput {
+  message: String!
+  type: String!
+  lu: Boolean
+  userId: Int!
+}
+
+input UpdateNotificationInput {
+  message: String
+  type: String
+  lu: Boolean
+  userId: Int
+  id: Int!
+}
+
+input CreateRevisionInput {
+  dateRevision: DateTime!
+  commentaire: String!
+  userId: Int!
+  articleId: Int!
+}
+
+input UpdateRevisionInput {
+  dateRevision: DateTime
+  commentaire: String
+  userId: Int
+  articleId: Int
+  id: Int!
+}
+
+input CreateSourceInput {
+  nom: String!
+  url: String!
+  type: TypeSource!
+  fiable: Boolean
+  logoUrl: String
+  pays: String!
+  langue: String!
+}
+
+input UpdateSourceInput {
+  nom: String
+  url: String
+  type: TypeSource
+  fiable: Boolean
+  logoUrl: String
+  pays: String
+  langue: String
+  id: Int!
+}

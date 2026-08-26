@@ -1,0 +1,223 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Media {
+  id: Int!
+  type: MediaType!
+  urlFichier: String!
+  titre: String!
+  description: String
+  localisation: String
+  dateCapture: DateTime
+  article: Article!
+  user: User!
+}
+
+enum MediaType {
+  Image
+  Video
+  Audio
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Source {
+  id: Int!
+  nom: String!
+  url: String!
+  type: TypeSource!
+  fiable: Boolean!
+  logoUrl: String
+  pays: String!
+  langue: String!
+  dateCreation: DateTime!
+  newsItems: [NewsItem!]!
+}
+
+enum TypeSource {
+  WEB
+  API
+  JOURNAL
+  MAGAZINE
+  TV
+  RADIO
+  RESEAU_SOCIAL
+  AGENCE_PRESSE
+  BLOG
+  PODCAST
+  COMMUNIQUE_OFFICIEL
+  REPORTAGE_TERRAIN
+  AUTRE
+}
+
+type NewsItem {
+  id: Int!
+  titre: String!
+  contenu: String!
+  categorie: CategorieNews!
+  url: String!
+  datePublication: DateTime!
+  source: Source!
+  articles: [Article!]!
+}
+
+enum CategorieNews {
+  BREAKING_NEWS
+  POLITIQUE
+  ECONOMIE
+  TECHNOLOGIE
+  SPORT
+  CULTURE
+  INTERNATIONAL
+  BUSINESS
+  IA
+  CYBERSECURITE
+  SANTE
+  SCIENCE
+  ENVIRONNEMENT
+  RESEAUX_SOCIAUX
+  AUTRE
+}
+
+type Revision {
+  id: Int!
+  dateRevision: DateTime!
+  commentaire: String!
+  user: User!
+  article: Article!
+}
+
+type Article {
+  id: Int!
+  titre: String!
+  contenu: String!
+  statut: ArticleStatus!
+  categorie: CategorieArticle
+  dateCreation: DateTime!
+  dateModification: DateTime!
+  datePublication: DateTime
+  tags: [String!]
+  auteur: User!
+  medias: [Media!]!
+  revisions: [Revision!]!
+  newsItems: [NewsItem!]!
+}
+
+enum ArticleStatus {
+  Brouillon
+  Publie
+  Archive
+  EnAttente
+  Refuse
+  Supprime
+  EnCoursDeValidation
+  Valide
+  Invalide
+}
+
+enum CategorieArticle {
+  POLITIQUE
+  ECONOMIE
+  TECHNOLOGIE
+  SPORT
+  CULTURE
+  SANTE
+  EDUCATION
+  ENVIRONNEMENT
+  INTERNATIONAL
+  SOCIETE
+  SCIENCE
+  SECURITE
+  DIVERTISSEMENT
+  AUTRE
+}
+
+type ChatbotAi {
+  id: Int!
+  question: String!
+  resultat: String!
+  dateAnalyse: DateTime!
+  user: User!
+}
+
+type Role {
+  id: Int!
+  nomRole: Roles!
+  users: [User!]!
+}
+
+enum Roles {
+  CELLULE_VALIDATION
+  EQUIPE_MEDIA
+  JOURNALISTE
+  ADMIN
+}
+
+type Notification {
+  id: Int!
+  message: String!
+  type: String!
+  lu: Boolean!
+  dateEnvoi: DateTime!
+  user: User!
+}
+
+type User {
+  id: Int!
+  nom: String!
+  prenom: String!
+  email: String!
+  statut: String!
+  dateCreation: DateTime!
+  role: Role!
+  notifications: [Notification!]!
+  revisions: [Revision!]!
+  articles: [Article!]!
+  medias: [Media!]!
+  analyses: [ChatbotAi!]!
+}
+
+type AuthPayload {
+  accessToken: String!
+  user: User!
+}
+
+type Query {
+  users: [User!]!
+  user(id: Int!): User!
+}
+
+type Mutation {
+  login(loginInput: LoginInput!): AuthPayload!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+}
+
+input LoginInput {
+  email: String!
+  motDePasse: String!
+}
+
+input CreateUserInput {
+  nom: String!
+  prenom: String!
+  email: String!
+  motDePasse: String!
+  statut: String
+  roleId: Int!
+}
+
+input UpdateUserInput {
+  nom: String
+  prenom: String
+  email: String
+  motDePasse: String
+  statut: String
+  roleId: Int
+  id: Int!
+}
