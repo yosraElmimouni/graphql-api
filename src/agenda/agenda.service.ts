@@ -51,4 +51,6 @@ export class AgendaService {
     await this.agendaRepository.remove(agenda);
     return agenda;
   }
+
+  
 }
