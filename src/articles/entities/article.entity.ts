@@ -83,4 +83,6 @@ export class Article {
   @ManyToMany(() => NewsItem, (newsItem) => newsItem.articles)
   @JoinTable()
   newsItems!: NewsItem[];
+
+  
 }
