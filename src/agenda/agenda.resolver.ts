@@ -31,6 +31,9 @@ export class AgendaResolver {
     return this.agendaService.update(updateAgendaInput.id, updateAgendaInput);
   }
 
+
+  
+
   @Mutation(() => Agenda)
   removeAgenda(@Args('id', { type: () => Int }) id: number) {
     return this.agendaService.remove(id);
